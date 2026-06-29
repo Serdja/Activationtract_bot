@@ -121,8 +121,19 @@ def main():
     app.add_handler(MessageHandler(filters.Document.ALL, handle_document))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
 
-    logger.info("Bot started")
-    app.run_polling()
+    if os.environ.get("RENDER"):
+        port = int(os.environ.get("PORT", 10000))
+        hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "")
+        logger.info("Starting webhook mode on port %s", port)
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=port,
+            url_path="webhook",
+            webhook_url=f"https://{hostname}/webhook",
+        )
+    else:
+        logger.info("Starting polling mode")
+        app.run_polling()
 
 
 if __name__ == "__main__":
