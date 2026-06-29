@@ -1,37 +1,35 @@
 """
-DSPy — примеры использования.
+DSPy — примеры использования с Google Gemini.
 
 DSPy позволяет строить AI-пайплайны декларативно:
 вместо написания промптов ты описываешь сигнатуры (вход -> выход),
 а фреймворк сам генерирует и оптимизирует промпты.
 """
 
+import os
+
 import dspy
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    print("ОШИБКА: Установи GEMINI_API_KEY в файле .env")
+    print("Скопируй .env.example в .env и вставь свой ключ")
+    print("Получить ключ: https://aistudio.google.com/apikey")
+    exit(1)
+
+lm = dspy.LM("gemini/gemini-2.0-flash", api_key=GEMINI_API_KEY)
+dspy.configure(lm=lm)
+
+print("=== DSPy + Google Gemini ===\n")
 
 
 # ============================================================
-# 1. НАСТРОЙКА МОДЕЛИ (LM)
+# SIGNATURES — описание задачи
 # ============================================================
-# DSPy поддерживает OpenAI, Anthropic, локальные модели и др.
-# Раскомментируй нужную строку и подставь свой API-ключ:
-
-# OpenAI:
-# lm = dspy.LM("openai/gpt-4o-mini", api_key="sk-...")
-
-# Anthropic (Claude):
-# lm = dspy.LM("anthropic/claude-sonnet-4-20250514", api_key="sk-ant-...")
-
-# Локальная модель через Ollama:
-# lm = dspy.LM("ollama_chat/llama3.2", api_base="http://localhost:11434")
-
-# Для демо без ключа — покажем структуру кода:
-print("=== DSPy Примеры ===\n")
-
-
-# ============================================================
-# 2. SIGNATURES — описание задачи
-# ============================================================
-# Самый простой способ — строка "вход -> выход":
 
 class QA(dspy.Signature):
     """Ответь на вопрос кратко и точно."""
@@ -52,16 +50,13 @@ class Classify(dspy.Signature):
 
 
 # ============================================================
-# 3. MODULES — строительные блоки
+# MODULES — строительные блоки
 # ============================================================
 
-# Простой вызов (Predict) — прямой промпт
 qa_simple = dspy.Predict(QA)
-
-# Chain of Thought — модель рассуждает шаг за шагом
 qa_cot = dspy.ChainOfThought(QA)
 
-# Можно строить сложные пайплайны как классы:
+
 class RAGPipeline(dspy.Module):
     """Пример RAG-пайплайна: поиск + генерация ответа."""
 
@@ -89,44 +84,34 @@ class MultiStepAnalyzer(dspy.Module):
 
 
 # ============================================================
-# 4. ИСПОЛЬЗОВАНИЕ (нужен настроенный LM)
+# ДЕМО
 # ============================================================
-def demo_with_lm():
-    """Запусти эту функцию после настройки модели."""
 
-    # Простой вопрос-ответ
-    result = qa_simple(question="Что такое DSPy?")
-    print(f"Простой ответ: {result.answer}")
+if __name__ == "__main__":
+    print("--- 1. Простой вопрос-ответ ---")
+    result = qa_simple(question="Что такое Python?")
+    print(f"Ответ: {result.answer}\n")
 
-    # Chain of Thought
+    print("--- 2. Chain of Thought (рассуждение) ---")
     result = qa_cot(question="Почему небо голубое?")
-    print(f"CoT рассуждение: {result.reasoning}")
-    print(f"CoT ответ: {result.answer}")
+    print(f"Рассуждение: {result.reasoning}")
+    print(f"Ответ: {result.answer}\n")
 
-    # RAG пайплайн
+    print("--- 3. RAG пайплайн ---")
     rag = RAGPipeline()
     result = rag(
         question="Какой город столица Франции?",
-        context="Франция — страна в Западной Европе. Столица — Париж.",
+        context="Франция — страна в Западной Европе. Столица — Париж. Население ~67 млн.",
     )
-    print(f"RAG ответ: {result.answer}")
+    print(f"Ответ: {result.answer}\n")
 
-    # Многошаговый анализ
+    print("--- 4. Многошаговый анализ ---")
     analyzer = MultiStepAnalyzer()
     result = analyzer(text="Этот продукт превосходен! Отличное качество и быстрая доставка.")
     print(f"Резюме: {result.summary}")
-    print(f"Тональность: {result.sentiment}")
+    print(f"Тональность: {result.sentiment}\n")
 
-
-# ============================================================
-# 5. ОПТИМИЗАЦИЯ (самая мощная фича DSPy)
-# ============================================================
-def demo_optimization():
-    """
-    Оптимизаторы автоматически подбирают лучшие промпты.
-    Нужен датасет с примерами и метрика оценки.
-    """
-
+    print("--- 5. Оптимизация промптов ---")
     trainset = [
         dspy.Example(question="Столица Франции?", answer="Париж").with_inputs("question"),
         dspy.Example(question="Столица Японии?", answer="Токио").with_inputs("question"),
@@ -142,46 +127,4 @@ def demo_optimization():
     result = optimized_qa(question="Столица Германии?")
     print(f"Оптимизированный ответ: {result.answer}")
 
-
-# ============================================================
-# 6. БЫСТРЫЙ СТАРТ
-# ============================================================
-print("""
-Как начать использовать DSPy:
-
-1. Установи: pip install dspy
-2. Настрой модель:
-   import dspy
-   lm = dspy.LM("openai/gpt-4o-mini", api_key="YOUR_KEY")
-   dspy.configure(lm=lm)
-
-3. Опиши задачу через Signature:
-   qa = dspy.Predict("question -> answer")
-   result = qa(question="Что такое Python?")
-   print(result.answer)
-
-4. Используй Chain of Thought для сложных задач:
-   qa = dspy.ChainOfThought("question -> answer")
-
-5. Оптимизируй с помощью BootstrapFewShot:
-   optimizer = dspy.BootstrapFewShot(metric=my_metric)
-   optimized = optimizer.compile(qa, trainset=examples)
-
-Доступные модули:
-  - dspy.Predict        — простой вызов
-  - dspy.ChainOfThought — рассуждение шаг за шагом
-  - dspy.ReAct           — агент с инструментами
-  - dspy.ProgramOfThought — генерация кода для вычислений
-  - dspy.MultiChainComparison — сравнение нескольких цепочек
-
-Доступные оптимизаторы:
-  - dspy.BootstrapFewShot       — подбор few-shot примеров
-  - dspy.MIPROv2                — оптимизация промптов и примеров
-  - dspy.BootstrapFinetune      — файнтюнинг модели
-""")
-
-
-if __name__ == "__main__":
-    print("Для запуска демо с реальной моделью:")
-    print("1. Раскомментируй настройку LM в начале файла")
-    print("2. Вызови demo_with_lm() или demo_optimization()")
+    print("\n=== Готово! DSPy работает с Gemini ===")
