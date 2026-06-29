@@ -10,17 +10,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not GROQ_API_KEY:
-    print("ОШИБКА: Установи GROQ_API_KEY в файле .env")
-    print("Получить ключ: https://console.groq.com/keys")
+if not GEMINI_API_KEY:
+    print("ОШИБКА: Установи GEMINI_API_KEY в файле .env")
+    print("Получить ключ: https://aistudio.google.com/apikey")
     exit(1)
 
-lm = dspy.LM("groq/llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
+lm = dspy.LM("gemini/gemini-2.0-flash", api_key=GEMINI_API_KEY)
 dspy.configure(lm=lm)
 
-print("=== DSPy + Groq (Llama 3.3 70B) ===\n")
+print("=== DSPy + Google Gemini 2.0 Flash ===\n")
 
 
 # ============================================================
