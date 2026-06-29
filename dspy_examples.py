@@ -1,9 +1,6 @@
 """
-DSPy — примеры использования с Google Gemini.
-
-DSPy позволяет строить AI-пайплайны декларативно:
-вместо написания промптов ты описываешь сигнатуры (вход -> выход),
-а фреймворк сам генерирует и оптимизирует промпты.
+DSPy — примеры использования с Groq (Llama).
+Бесплатный, быстрый, без ограничений по региону.
 """
 
 import os
@@ -13,18 +10,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if not GEMINI_API_KEY:
-    print("ОШИБКА: Установи GEMINI_API_KEY в файле .env")
-    print("Скопируй .env.example в .env и вставь свой ключ")
-    print("Получить ключ: https://aistudio.google.com/apikey")
+if not GROQ_API_KEY:
+    print("ОШИБКА: Установи GROQ_API_KEY в файле .env")
+    print("Получить ключ: https://console.groq.com/keys")
     exit(1)
 
-lm = dspy.LM("gemini/gemini-2.0-flash", api_key=GEMINI_API_KEY)
+lm = dspy.LM("groq/llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
 dspy.configure(lm=lm)
 
-print("=== DSPy + Google Gemini ===\n")
+print("=== DSPy + Groq (Llama 3.3 70B) ===\n")
 
 
 # ============================================================
@@ -127,4 +123,4 @@ if __name__ == "__main__":
     result = optimized_qa(question="Столица Германии?")
     print(f"Оптимизированный ответ: {result.answer}")
 
-    print("\n=== Готово! DSPy работает с Gemini ===")
+    print("\n=== Готово! DSPy работает с Groq ===")
