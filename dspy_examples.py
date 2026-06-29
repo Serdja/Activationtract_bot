@@ -10,17 +10,28 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-if not GEMINI_API_KEY:
-    print("ОШИБКА: Установи GEMINI_API_KEY в файле .env")
-    print("Получить ключ: https://aistudio.google.com/apikey")
+if GROQ_API_KEY:
+    lm = dspy.LM("groq/llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
+    provider = "Groq (Llama 3.3 70B)"
+elif GEMINI_API_KEY:
+    lm = dspy.LM("gemini/gemini-2.0-flash", api_key=GEMINI_API_KEY)
+    provider = "Google Gemini 2.0 Flash"
+elif ANTHROPIC_API_KEY:
+    lm = dspy.LM("anthropic/claude-haiku-3-5-20241022", api_key=ANTHROPIC_API_KEY)
+    provider = "Anthropic Claude Haiku"
+else:
+    print("ОШИБКА: Нужен API-ключ. Добавь в .env один из:")
+    print("  GROQ_API_KEY=...      (бесплатно: https://console.groq.com/keys)")
+    print("  GEMINI_API_KEY=...    (https://aistudio.google.com/apikey)")
+    print("  ANTHROPIC_API_KEY=... (https://console.anthropic.com)")
     exit(1)
 
-lm = dspy.LM("gemini/gemini-2.0-flash", api_key=GEMINI_API_KEY)
 dspy.configure(lm=lm)
-
-print("=== DSPy + Google Gemini 2.0 Flash ===\n")
+print(f"=== DSPy + {provider} ===\n")
 
 
 # ============================================================
