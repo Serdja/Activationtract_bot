@@ -1,59 +1,59 @@
 # CLAUDE.md — Activationtract Bot
 
-## Project Overview
+## Обзор проекта
 
-**Activationtract_bot** is a bot project in its initial stage. The repository currently contains only a README and this configuration file. All code, infrastructure, and tooling are yet to be added.
+**Activationtract_bot** — бот-проект на начальной стадии. Репозиторий пока содержит только README и этот конфигурационный файл. Код, инфраструктура и инструменты ещё не добавлены.
 
-- **Repository**: `serdja/activationtract_bot`
-- **Default branch**: `main`
+- **Репозиторий**: `serdja/activationtract_bot`
+- **Основная ветка**: `main`
 
-## Repository Structure
+## Структура репозитория
 
 ```
 .
-├── CLAUDE.md        # This file — AI assistant guidelines
-└── README.md        # Project readme
+├── CLAUDE.md        # Этот файл — инструкции для AI-ассистента
+└── README.md        # Описание проекта
 ```
 
-## Development Workflow
+## Рабочий процесс
 
-### Branching
+### Ветвление
 
-- The default branch is `main`. Do not push directly to `main` without explicit permission.
-- Feature work should happen on dedicated branches (e.g., `feature/<name>`, `fix/<name>`).
-- Use descriptive branch names that reflect the work being done.
+- Основная ветка — `main`. Не пушить напрямую в `main` без явного разрешения.
+- Работа над фичами ведётся в отдельных ветках (например, `feature/<название>`, `fix/<название>`).
+- Названия веток должны отражать суть выполняемой работы.
 
-### Commits
+### Коммиты
 
-- Write concise commit messages that explain **why** the change was made.
-- Keep commits focused — one logical change per commit.
+- Сообщения коммитов должны быть краткими и объяснять **зачем** сделано изменение.
+- Один коммит — одно логическое изменение.
 
-### Pull Requests
+### Pull Request'ы
 
-- Do not create PRs unless explicitly asked.
-- If a PR template exists in `.github/`, follow its structure.
+- Не создавать PR без явной просьбы.
+- Если в `.github/` есть шаблон PR — следовать его структуре.
 
-## Code Conventions
+## Соглашения по коду
 
-*To be established as the codebase grows. Update this section when the tech stack and coding patterns are decided.*
+*Будут определены по мере развития кодовой базы. Обновить этот раздел, когда будут выбраны стек технологий и паттерны разработки.*
 
-### General Guidelines
+### Общие принципы
 
-- Prefer simple, readable code over clever abstractions.
-- Do not add dependencies without justification.
-- Do not commit secrets, credentials, or `.env` files.
+- Простой и читаемый код важнее хитрых абстракций.
+- Не добавлять зависимости без обоснования.
+- Не коммитить секреты, учётные данные и файлы `.env`.
 
-## Testing
+## Тестирование
 
-*No test framework has been configured yet. Update this section when tests are introduced.*
+*Фреймворк для тестов ещё не настроен. Обновить этот раздел при добавлении тестов.*
 
-## Build & Run
+## Сборка и запуск
 
-*No build or run commands have been configured yet. Update this section when the project's tooling is set up.*
+*Команды сборки и запуска ещё не настроены. Обновить этот раздел при настройке инструментов проекта.*
 
-## Key Files
+## Ключевые файлы
 
-| File | Purpose |
-|------|---------|
-| `CLAUDE.md` | AI assistant context and project conventions |
-| `README.md` | Project overview |
+| Файл | Назначение |
+|------|------------|
+| `CLAUDE.md` | Контекст и соглашения для AI-ассистента |
+| `README.md` | Обзор проекта |
